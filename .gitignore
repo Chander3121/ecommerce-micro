@@ -1,0 +1,33 @@
+# macOS
+.DS_Store
+
+# Rails
+auth-service/log/*
+auth-service/tmp/*
+auth-service/storage/*
+auth-service/.env
+log/
+tmp/
+storage/
+
+# Go
+order-service/bin/
+
+# Docker
+postgres_data/
+
+
+# ENV
+.env
+**/.env
+
+# Python
+__pycache__/
+*.pyc
+product-service/venv/
+
+# Node
+node_modules/
+
+# Misc
+coverage/
