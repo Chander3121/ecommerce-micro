@@ -1,13 +1,27 @@
 from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy.orm import Session
-
-from app import models, schemas, crud
+import threading
 
 from app.database import engine, get_db, Base
+from app import models, schemas, crud
+from app.grpc_server import serve
+
+from sqlalchemy.orm import Session
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+
+@app.on_event("startup")
+async def startup_event():
+    print("STARTING GRPC THREAD")
+
+    grpc_thread = threading.Thread(
+        target=serve,
+        daemon=True
+    )
+
+    grpc_thread.start()
 
 
 @app.get("/")

@@ -41,8 +41,8 @@ func CreateOrder(c *gin.Context) {
     return
   }
 
-  product, err := clients.GetProduct(
-    int(order.ProductID),
+  product, err := clients.GetProductGrpc(
+    int32(order.ProductID),
   )
 
   if err != nil {
@@ -53,7 +53,7 @@ func CreateOrder(c *gin.Context) {
     return
   }
 
-  if product.Stock < order.Quantity {
+  if int(product.Stock) < order.Quantity {
     c.JSON(http.StatusBadRequest, gin.H{
       "error": "Insufficient stock",
     })
