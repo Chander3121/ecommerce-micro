@@ -124,6 +124,22 @@ services:
     depends_on:
       - rabbitmq
 
+  api-gateway:
+    build: ./api-gateway
+
+    container_name: api-gateway
+
+    volumes:
+      - ./api-gateway:/app
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      - auth-service
+      - product-service
+      - order-service
+
 
 volumes:
   auth_postgres_data:
