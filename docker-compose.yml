@@ -1,0 +1,107 @@
+services:
+  auth-db:
+    image: postgres:17
+
+    container_name: auth-db
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: auth_service_development
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - auth_postgres_data:/var/lib/postgresql/data
+
+
+  auth-service:
+    build: ./auth-service
+
+    container_name: auth-service
+
+    command: bash -c "rm -f tmp/pids/server.pid && rails s -b 0.0.0.0 -p 3001"
+
+    volumes:
+      - ./auth-service:/app
+
+    ports:
+      - "3001:3001"
+
+    depends_on:
+      - auth-db
+
+    environment:
+      DB_HOST: auth-db
+      DB_USERNAME: postgres
+      DB_PASSWORD: password
+
+
+  product-db:
+    image: postgres:17
+
+    container_name: product-db
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: product_service_development
+
+    ports:
+      - "5434:5432"
+
+    volumes:
+      - product_postgres_data:/var/lib/postgresql/data
+
+
+  product-service:
+    build: ./product-service
+
+    container_name: product-service
+
+    volumes:
+      - ./product-service:/app
+
+    ports:
+      - "3002:3002"
+
+    depends_on:
+      - product-db
+
+  order-db:
+    image: postgres:17
+
+    container_name: order-db
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: order_service_development
+
+    ports:
+      - "5435:5432"
+
+    volumes:
+      - order_postgres_data:/var/lib/postgresql/data
+
+
+  order-service:
+    build: ./order-service
+
+    container_name: order-service
+
+    volumes:
+      - ./order-service:/app
+
+    ports:
+      - "3003:3003"
+
+    depends_on:
+      - order-db
+
+
+volumes:
+  auth_postgres_data:
+  product_postgres_data:
+  order_postgres_data:
