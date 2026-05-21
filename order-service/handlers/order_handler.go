@@ -5,6 +5,7 @@ import (
   "order-service/clients"
   "order-service/config"
   "order-service/models"
+  "order-service/publishers"
 
   "github.com/gin-gonic/gin"
 )
@@ -68,6 +69,8 @@ func CreateOrder(c *gin.Context) {
   order.Status = "pending"
 
   config.DB.Create(&order)
+
+  publishers.PublishOrderCreated(order)
 
   c.JSON(http.StatusCreated, gin.H{
     "order": order,
